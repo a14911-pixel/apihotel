@@ -1,24 +1,24 @@
 from flask import Flask
 from flask_restful import Resource, Api
+from resources.hotel import Hoteis, Hotel
+from con_sql import bd
 
 # Variável representar a minha aplicação
 app = Flask(__name__)
+
+# Configurações
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///hoteis.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
 api = Api(app)
-
-hoteis = [
-    { "hotel_id": "paraiso", "nome": "Hotel Paraiso", "estrelas": 4.6, "diaria":123.99, "cidade": "Porto"},
-    { "hotel_id": "fukui", "nome": "Fukui Resort", "estrelas": 4.8, "diaria":225.99, "cidade": "Viena"},
-    { "hotel_id": "aguas", "nome": "Hotel Aguas", "estrelas": 4.2, "diaria":193.99, "cidade": "Lisboa"},
-]
-
-class Hoteis(Resource):
-    def get(self):
-        return { "hoteis": hoteis}
-
 
 # Rotas
 api.add_resource(Hoteis, "/hoteis")
+api.add_resource(Hotel,"/hoteis/<string:id_hotel>")
     
 
 if __name__ == "__main__":
+    bd.init_app(app)
+    with app.app_context():
+        bd.create_all()
     app.run(debug=True)
