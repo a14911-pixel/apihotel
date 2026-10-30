@@ -16,32 +16,32 @@ class HotelModel(bd.Model):
         self.diaria = diaria
         self.cidade = cidade
 
-        def json(self):
-            return{
-                "hotel_id" : self.hotel_id,
-                "nome" : self.nome,
-                "estrelas" : self.estrelas,
-                "diaria" : self.diaria,
-                "cidade" : self.cidade
-            }
-        @classmethod
-        def find_hotel(cls, id_hotel):
-            hotel = cls.query.filter_by(hotel_id=id_hotel).first() # 0 ou 1
-            # SELECT * FROM hoteis WHERE hotel_id=id_hotel LIMIT 1
-            if hotel:
-                return hotel
-            return None
+    def json(self):
+        return{
+            "hotel_id" : self.hotel_id,
+            "nome" : self.nome,
+            "estrelas" : self.estrelas,
+            "diaria" : self.diaria,
+            "cidade" : self.cidade
+        }
+    @classmethod
+    def find_hotel(cls, id_hotel):
+        hotel = cls.query.filter_by(hotel_id=id_hotel).first() # 0 ou 1
+        # SELECT * FROM hoteis WHERE hotel_id=id_hotel LIMIT 1
+        if hotel:
+            return hotel
+        return None
 
-        def save_hotel(self):
-            bd.session.add(self)
-            bd.session.commit()
+    def save_hotel(self):
+        bd.session.add(self)
+        bd.session.commit()
 
-        def delete_hotel(self):
-            bd.session.delete(self)
-            bd.session.commit()
+    def delete_hotel(self):
+        bd.session.delete(self)
+        bd.session.commit()
 
-        def update_hotel(self, nome_atualizado,diaria_atualizada,estrelas_atualizada,cidade_atualizada):
-            self.nome = nome_atualizado
-            self.estrelas = estrelas_atualizada
-            self.diaria = diaria_atualizada
-            self.cidade = cidade_atualizada
+    def update_hotel(self, nome_atualizado,diaria_atualizada,estrelas_atualizada,cidade_atualizada):
+        self.nome = nome_atualizado
+        self.estrelas = estrelas_atualizada
+        self.diaria = diaria_atualizada
+        self.cidade = cidade_atualizada
