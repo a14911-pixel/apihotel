@@ -4,6 +4,13 @@ from flask_jwt_extended import jwt_required
 
 # Listar todos os hóteis
 class Hoteis(Resource):
+    path_params = reqparse.RequestParser()
+    path_params.add_argument("cidade", type=str, default="", locations="args")
+    path_params.add_argument("estrelas_min", type=float, default=0, locations="args")
+    path_params.add_argument("estrelas_max", type=str, default=5, locations="args")
+    path_params.add_argument("diaria_min", type=str, default=0, locations="args")
+    path_params.add_argument("diaria_max", type=str, default=0, locations="args")
+    path_params.add_argument("itens", type=int, default=3, location="args")
     def get(self):
         return { "hoteis": [hotel.json() for hotel in HotelModel.query.all()]}
     
