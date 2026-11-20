@@ -2,7 +2,7 @@ from con_sql import bd
 
 class UserModel(bd.Model):
     __tablename__ = "utilizadores"
-    hotel_id = bd.Column(bd.String, primary_key=True, autoincrement=True)
+    user_id = bd.Column(bd.Integer, primary_key=True, autoincrement=True)
     username = bd.Column(bd.String(40))
     password = bd.Column(bd.String(40))
     

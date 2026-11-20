@@ -5,14 +5,43 @@ from flask_jwt_extended import jwt_required
 # Listar todos os hóteis
 class Hoteis(Resource):
     path_params = reqparse.RequestParser()
-    path_params.add_argument("cidade", type=str, default="", locations="args")
-    path_params.add_argument("estrelas_min", type=float, default=0, locations="args")
-    path_params.add_argument("estrelas_max", type=str, default=5, locations="args")
-    path_params.add_argument("diaria_min", type=str, default=0, locations="args")
-    path_params.add_argument("diaria_max", type=str, default=0, locations="args")
+    path_params.add_argument("cidade", type=str, default="0", location="args")
+    path_params.add_argument("estrelas_min", type=float, default=0, location="args")
+    path_params.add_argument("estrelas_max", type=str, default=5, location="args")
+    path_params.add_argument("diaria_min", type=str, default=0, location="args")
+    path_params.add_argument("diaria_max", type=str, default=0, location="args")
     path_params.add_argument("itens", type=int, default=3, location="args")
+    path_params.add_argument("page", type=int, default=1, location="args")
+
     def get(self):
-        return { "hoteis": [hotel.json() for hotel in HotelModel.query.all()]}
+        meus_filtros = Hoteis.path_params.parse_args()
+        query = HotelModel.query
+
+        if meus_filtros["cidade"]:
+            query = query.filter(HotelModel.cidade == meus_filtros["cidade"])
+        if meus_filtros["estrelas_min"]:
+            query = query.filter(HotelModel.estrelas == meus_filtros["estrelas_min"])
+        if meus_filtros["estrelas_max"]:
+            query = query.filter(HotelModel.estrelas == meus_filtros["estrelas_max"])
+        if meus_filtros["diaria_min"]:
+            query = query.filter(HotelModel.diaria == meus_filtros["estrelas_min"])
+        if meus_filtros["diaria_max"]:
+            query = query.filter(HotelModel.diaria == meus_filtros["diaria_max"])
+
+        # Paginação
+        pagina = meus_filtros[ "page" ]
+        items_per_page = meus_filtros["itens"]
+        pagination = query.paginate(page=pagina, per_page=items_per_page, error_out=False)
+
+        resultado_hotel =  [hotel.json() for hotel in pagination.items]
+
+        return {
+            "hoteis" : resultado_hotel,
+            "qtde_itens" : pagination.total,
+            "qtde_pages" : pagination.pages,
+            "pagina_atual": pagina
+        }
+        
     
 # Listar, inserir, atualizar e eliminar um hotel específico
 class Hotel(Resource):
