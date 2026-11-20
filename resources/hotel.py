@@ -63,20 +63,31 @@ class Hotel(Resource):
         hotel_encontrado = HotelModel.find_hotel(id_hotel)
         if hotel_encontrado:
             return { " message": "Hotel with this id already exists"}
-        novo_hotel = HotelModel(id_hotel, **dados)
-        novo_hotel.save_hotel()
-        return novo_hotel.json(), 200
+        try:
+            novo_hotel = HotelModel(id_hotel, **dados)
+            novo_hotel.save_hotel()
+            return novo_hotel.json(), 200
+        except:
+            return{ "mensagem" : "Um erro interno do servidor aconteceu..."}, 500
+
+
+       
+        
     
     @jwt_required()
     def put(self, id_hotel):
         dados = Hotel.argumentos.parse_args()
         Hotel_encontrado = HotelModel.find_hotel(id_hotel)
         if Hotel_encontrado:
-            lista = [dado for dado in dados.values()]
-            hotel_atualizado = HotelModel(id_hotel, **dados)
-            hotel_atualizado.update_hotel(**dados)
-            hotel_atualizado.save_hotel()
-            return hotel_atualizado.json(), 200
+            try:
+                lista = [dado for dado in dados.values()]
+                hotel_atualizado = HotelModel(id_hotel, **dados)
+                hotel_atualizado.update_hotel(**dados)
+                hotel_atualizado.save_hotel()
+                return hotel_atualizado.json(), 200
+            except:
+                return{ "mensagem" : "Um erro interno do servidor aconteceu..."}, 500
+            
 
         novo_hotel = HotelModel(id_hotel, **dados)
         novo_hotel.save_hotel()
